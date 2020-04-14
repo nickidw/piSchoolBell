@@ -4,7 +4,7 @@
 
 import os, sys, MySQLdb, time, urllib2, socket
 
-import Adafruit_CharLCD as LCD
+#import Adafruit_CharLCD as LCD
 
 from ConfigParser import ConfigParser
 from datetime import datetime, timedelta
@@ -152,6 +152,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
     isWorkDay = False
     isNotOnBreak = False
     foundRingTime = False
+    loopProtector = 0
     
     while True:
         # find first work day
@@ -162,13 +163,15 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                  "LIMIT 1")
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:
+	    loopProtector = 0
             isWorkDay = True
             if verbose:
                 print "*** This is a school day"
             for row in result:
                 nextRingDate = row[0] # this is the day we are going to look for
                 dayNumber = row[1]
-                
+    	else:
+	    loopProtector = loopProtector + 1
         # check if this is on a break
         if isWorkDay:
             query = ("SELECT * FROM breaks WHERE " 
@@ -212,6 +215,9 @@ def nextRing(cursor, dateNow, timeNow, verbose):
             dateNow = datetime.strftime(dateNow, "%Y-%m-%d") # convert to string
             
             timeNow = "00:00" # set time to midnight on the parsed date
+
+	if loopProtector == 10:
+	    break
             
     # find ring pattern
     query = ("SELECT ringPatternName, ringPattern FROM ringPatterns WHERE " 
