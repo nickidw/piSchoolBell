@@ -141,7 +141,7 @@ if [ ! -f "/etc/cron.d/piSchoolBell" ]
 */1 * * * * pi /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1
 
 # Check if its time to ring bell
-*/1 * * * * pi /home/pi/bin/piSchoolBell/ringBell.py >> /dev/null 2>&
+*/1 * * * * pi /home/pi/bin/piSchoolBell/ringBell.py >> /dev/null 2>&1
 
 # Get new days at the first of every month
 5 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py -c >> /dev/null 2>&1
