@@ -1,4 +1,4 @@
-set @date = date(now());
+set @date = (select date_add(max(date), interval 1 day) from days);
 insert into days (date, dayName, weekNumber, dayNumber, isWorkDay)
 select 
 	date(date_add(@date, interval seq day)) as date, 
